@@ -1,15 +1,33 @@
-FROM node:alpine
+### STAGE 1: Build ###
+FROM node:lts-alpine AS build
 
-WORKDIR /subvision
+#### make the 'app' folder the current working directory
+WORKDIR /usr/src/app
 
-COPY ./package.json /subvision/package.json
+#### copy both 'package.json' and 'package-lock.json' (if available)
+COPY package*.json ./
 
+#### install angular cli
 RUN npm install -g @angular/cli
 
+#### install project dependencies
 RUN npm install
 
-COPY . /subvision
+#### copy things
+COPY . .
 
-EXPOSE 4200
+#### generate build --prod
+RUN npm run build --prod
 
-CMD ["ng", "serve", "--host", "0.0.0.0","--poll", "500"]
+### STAGE 2: Run ###
+FROM nginxinc/nginx-unprivileged
+
+#### copy nginx conf
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+#### copy artifact build from the 'build environment'
+COPY --from=build /usr/src/app/dist/subvision/browser /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

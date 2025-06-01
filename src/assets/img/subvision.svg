@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+  height="150"
+  id="svg1"
+  version="1.1"
+  viewBox="0 0 1000 150"
+  width="1000"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs
+    id="defs1">
+  </defs>
+
+
+  <style type="text/css">
+
+    .very-small {
+      --stroke-width: 8;
+      stroke-linecap: round;
+    }
+
+
+    .small {
+      --stroke-width: 14;
+      stroke-linecap: round;
+    }
+
+
+    .medium {
+      --stroke-width: 18;
+      stroke-linecap: round;
+    }
+
+
+    .large {
+      --stroke-width: 22;
+      stroke-linecap: round;
+    }
+
+
+    .big {
+      --stroke-width: 26;
+      stroke-linecap: round;
+
+    }
+
+
+    line {
+      --stroke-width-ratio: 1;
+      --final-stroke-width: calc(var(--stroke-width) * var(--stroke-width-ratio));
+      stroke: #000;
+      --duration: 0.8s;
+      --interval: 0.15s;
+      stroke-width: var(--stroke-width);
+    }
+
+
+    text {
+      font-family: 'Chillax Variable', sans-serif;
+      font-weight: 600;
+      font-size: 100px;
+      --duration: 0.5s;
+      fill: #000;
+    }
+
+
+    tspan {
+      --interval-duration: 0.1s;
+      font-weight: calc(500 - var(--index) * 25);
+    }
+
+
+    text > tspan:nth-child(1) {
+      --index: 0;
+    }
+
+    text > tspan:nth-child(2) {
+      --index: 1;
+    }
+
+    text > tspan:nth-child(3) {
+      --index: 2;
+    }
+
+    text > tspan:nth-child(4) {
+      --index: 3;
+    }
+
+    text > tspan:nth-child(5) {
+      --index: 4;
+    }
+
+    text > tspan:nth-child(6) {
+      --index: 5;
+    }
+
+    text > tspan:nth-child(7) {
+      --index: 6;
+    }
+
+    text > tspan:nth-child(8) {
+      --index: 7;
+    }
+
+    text > tspan:nth-child(9) {
+      --index: 8;
+    }
+
+    text > tspan:nth-child(10) {
+      --index: 9;
+    }
+
+    text > tspan:nth-child(11) {
+      --index: 10;
+    }
+
+
+  </style>
+  <g
+    class="layer-MC0 animate"
+  >
+    <!--    transform="translate(-995.00001,-625.00001)"-->
+
+    <line stroke="#0f0" x1="75" x2="75" y1="15" y2="15" class="small n3_1"></line>
+    <line id="" x1="75" x2="75" y1="75" y2="75" class="big n3_3"></line>
+    <line id="" x1="45" x2="45" y1="75" y2="75" class="large n2_3"></line>
+    <line id="" x1="105" x2="105" y1="45" y2="45" class="medium major n4_2"></line>
+    <line id="" x1="135" x2="135" y1="75" y2="75" class="small n5_3"></line>
+    <line id="" x1="15" x2="15" y1="75" y2="75" class="small n1_3"></line>
+    <line id="4_1" x1="105" x2="105" y1="15" y2="15" class="very-small n4_1"></line>
+    <line id="1_2" x1="15" x2="15" y1="45" y2="45" class="very-small n1_2"></line>
+    <line id="5_4" x1="135" x2="135" y1="105" y2="105" class="very-small n5_4"></line>
+    <line id="2_1" x1="45" x2="45" y1="15" y2="15" class="very-small n2_1"></line>
+    <line id="4_5" x1="105" x2="105" y1="135" y2="135" class="very-small n4_5"></line>
+    <line id="2_5" x1="45" x2="45" y1="135" y2="135" class="very-small n2_5"></line>
+    <line id="5_2" x1="135" x2="135" y1="45" y2="45" class="very-small n5_2"></line>
+    <line id="1_4" x1="15" x2="15" y1="105" y2="105" class="very-small n1_4"></line>
+    <line id="3_5" x1="75" x2="75" y1="135" y2="135" class="small n3_5"></line>
+    <line id="3_2" x1="75" x2="75" y1="45" y2="45" class="large  n3_2"></line>
+    <line id="2_2" x1="45" x2="45" y1="45" y2="45" class="medium major n2_2"></line>
+    <line id="4_3" x1="105" x2="105" y1="75" y2="75" class="large  n4_3"></line>
+    <line id="4_4" x1="105" x2="105" y1="105" y2="105" class="medium major n4_4"></line>
+    <line id="3_4" x1="75" x2="75" y1="105" y2="105" class="large  n3_4"></line>
+    <line id="2_4" x1="45" x2="45" y1="105" y2="105" class="medium major n2_4"></line>
+  </g>
+  <text x="175"
+        y="100">
+    <tspan>s</tspan>
+    <tspan>u</tspan>
+    <tspan>b</tspan>
+    <tspan>v</tspan>
+    <tspan>i</tspan>
+    <tspan>s</tspan>
+    <tspan>i</tspan>
+    <tspan>o</tspan>
+    <tspan>n</tspan>
+
+  </text>
+</svg>
