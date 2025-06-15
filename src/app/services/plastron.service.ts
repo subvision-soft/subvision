@@ -21,7 +21,7 @@ export class PlastronService {
   get cv(): any {
     if (this._cv === undefined) {
       // @ts-ignore
-      return window['cv'];
+      return top['cv'];
     }
     return this._cv;
   }

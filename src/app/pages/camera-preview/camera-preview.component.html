@@ -20,9 +20,9 @@
   </app-loading>
   <div id="cameraPreview"></div>
   <app-capture-button (click)="capture()" class="capture"
-                      [percent]=" numberOfValidCoordinates()/CORRECT_COORDINATES_BEFORE_PROCESS *100"></app-capture-button>
+                      [percent]=" 100"></app-capture-button>
 </div>
-<!--<app-opencv-imshow></app-opencv-imshow>-->
+<app-opencv-imshow></app-opencv-imshow>
 
 <!--<canvas id="debug" width="4096" height="4096"></canvas>-->
 <!--<canvas id="debug2" width="4096" height="4096"></canvas>-->

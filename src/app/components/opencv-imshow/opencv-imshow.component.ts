@@ -1,7 +1,7 @@
 import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {OpencvImshowData, OpencvImshowService,} from '../../services/opencv-imshow.service';
-import {NgxOpenCVService} from '../../../lib/ngx-open-cv.service';
+import {SubvisionCoreService} from '../../../lib/subvision-core.service';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -21,13 +21,13 @@ export class OpencvImshowComponent implements OnDestroy {
 
   constructor(
     private OpenCVImshowService: OpencvImshowService,
-    private ngxOpenCVService: NgxOpenCVService
+    private ngxOpenCVService: SubvisionCoreService
   ) {
     this.subscriptions.push(
       this.ngxOpenCVService.cvState.subscribe((state) => {
         if (state.ready) {
           // @ts-ignore
-          this.cv = window['cv'];
+          this.cv = top['cv'];
           this.subscriptions.push(
             this.OpenCVImshowService.imageToShow.subscribe((data) => {
               if (data) {

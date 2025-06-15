@@ -2,13 +2,15 @@
 import {Component, computed, ElementRef, inject, OnDestroy, signal, ViewChild,} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {LoadingComponent} from '../../components/loading/loading.component';
-import {lastValueFrom, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import "@tensorflow/tfjs-backend-webgl";
 import {HttpClient} from '@angular/common/http';
-import {EndpointsUtils} from '../../utils/EndpointsUtils';
 import {CaptureButton} from '../../components/capture-button/capture-button.component';
 import {Router} from '@angular/router';
 import {ParametersService} from '../../services/parameters.service';
+import {SubvisionCoreService} from '../../../lib/subvision-core.service';
+import {OpencvImshowComponent} from '../../components/opencv-imshow/opencv-imshow.component';
+import {OpencvImshowService} from '../../services/opencv-imshow.service';
 
 
 type Coordinates = {
@@ -20,7 +22,7 @@ type Coordinates = {
   templateUrl: './camera-preview.component.html',
   styleUrls: ['./camera-preview.component.scss'],
   standalone: true,
-  imports: [NgIf, LoadingComponent, CaptureButton],
+  imports: [NgIf, LoadingComponent, CaptureButton, OpencvImshowComponent],
 })
 export class CameraPreviewComponent implements OnDestroy {
   private static readonly MAX_FPS = 5;
@@ -30,6 +32,7 @@ export class CameraPreviewComponent implements OnDestroy {
   @ViewChild('inputCanvasRef') inputCanvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('svg') svg: ElementRef | undefined;
   private input_canvas_ctx: CanvasRenderingContext2D | null;
+  private opencvImshowService: OpencvImshowService = inject(OpencvImshowService);
 
 
   private readonly router: Router = inject(Router);
@@ -47,7 +50,7 @@ export class CameraPreviewComponent implements OnDestroy {
   );
 
   loading: { text: string; progress: number | null } | null = {
-    text: 'Loading OpenCV.js', progress: null,
+    text: 'Loading Subvision Core', progress: null,
   };
   image: string | null = null;
   coordinates = signal<Coordinates[]>([]);
@@ -83,9 +86,19 @@ export class CameraPreviewComponent implements OnDestroy {
   private continuous: boolean = false;
   private openCVState: Subscription;
   private camera_stream: null | MediaStream = null;
+  private readonly subvisionCoreService: SubvisionCoreService = inject(SubvisionCoreService);
 
   constructor() {
     this.startCamera();
+    this.openCVState = this.subvisionCoreService.cvState.subscribe((state) => {
+      if (state.ready) {
+        this.loading = null;
+      } else if (state.error) {
+        this.loading = {text: 'Failed to load Subvision Core', progress: null};
+      } else if (state.loading) {
+        this.loading = {text: 'Loading Subvision Core', progress: null};
+      }
+    });
   }
 
 
@@ -94,6 +107,17 @@ export class CameraPreviewComponent implements OnDestroy {
     this.inputCanvasRef.nativeElement.height = fullSize ? this.videoRef.nativeElement.videoHeight : CameraPreviewComponent.PREPROCESSING_SIZE;
     this.input_canvas_ctx?.drawImage(this.videoRef.nativeElement, 0, 0, this.inputCanvasRef.nativeElement.width, this.inputCanvasRef.nativeElement.height);
     return this.inputCanvasRef.nativeElement.toDataURL('image/webp', 0.5).replace('data:image/webp;base64,', '');
+  }
+
+  getImageData(fullSize: boolean = false): ImageData {
+
+    const canvasElement = this.inputCanvasRef.nativeElement;
+    this.input_canvas_ctx?.drawImage(this.videoRef.nativeElement, 0, 0, canvasElement.width, canvasElement.height);
+    if (canvasElement.width === 0 || canvasElement.height === 0) {
+      console.warn('Canvas dimensions are zero, returning empty ImageData');
+      return new ImageData(0, 0);
+    }
+    return this.input_canvas_ctx?.getImageData(0, 0, canvasElement.width, canvasElement.height) || new ImageData(0, 0);
   }
 
 
@@ -106,16 +130,25 @@ export class CameraPreviewComponent implements OnDestroy {
       this.videoWidth.set(this.videoRef.nativeElement.videoWidth);
       this.videoHeight.set(this.videoRef.nativeElement.videoHeight);
       if (!this.continuous || this.loading) return;
-      const coordinates: number[][] | null = await lastValueFrom(this.http.post<number[][]>(EndpointsUtils.getPathDetectTarget(), {
-        image_data: await this.getImageBase64(),
-      }));
+      const imageData = this.getImageData(true)
       const lastCoordinates = this.coordinates();
+      let coordinates: any = null;
+      try {
+        coordinates = this.subvisionCoreService.instance.getSheetCoordinates(imageData.width, imageData.height, imageData.data);
+      } catch (error) {
+        console.log('Error processing image data:', error);
+      }
       if (coordinates) {
-        this.coordinates.set(coordinates.map((coordinate: number[]): Coordinates => {
-          return {
-            x: coordinate[0], y: coordinate[1],
-          };
-        }));
+        const size = coordinates.size();
+        const coordinatesArray: Coordinates[] = [];
+        for (let i = 0; i < size; i++) {
+          const coordinate = coordinates.get(i);
+          coordinatesArray.push({
+            x: coordinate.x,
+            y: coordinate.y,
+          });
+        }
+        this.coordinates.set(coordinatesArray);
 
         this.numberOfValidCoordinates.update((value) => {
           if (this.coordinates()?.length && lastCoordinates?.length) {
@@ -170,11 +203,8 @@ export class CameraPreviewComponent implements OnDestroy {
   async capture(): Promise<void> {
     if (this.CORRECT_COORDINATES_BEFORE_PROCESS <= this.numberOfValidCoordinates()) {
       // this.numberOfValidCoordinates.set(0);
-      const imageBase64 = await this.getImageBase64(true);
-      let data = await lastValueFrom(this.http.post(EndpointsUtils.getPathTargetScore(), {
-        image_data: imageBase64,
-      }));
-
+      const imageData = this.getImageData(true);
+      const data = this.subvisionCoreService.instance.processTargetImage(imageData.width, imageData.height, imageData.data);
       this.router.navigate(['/camera/result'], {
           state: {
             data: data, edit: true

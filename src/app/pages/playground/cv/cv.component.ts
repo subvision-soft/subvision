@@ -2,7 +2,7 @@ import {Component, ElementRef, HostListener, Inject, ViewChild,} from '@angular/
 import {CommonModule, DOCUMENT} from '@angular/common';
 import {OpencvImshowComponent} from '../../../components/opencv-imshow/opencv-imshow.component';
 import {OpenCVState} from '../../../../lib/models';
-import {NgxOpenCVService} from '../../../../lib/ngx-open-cv.service';
+import {SubvisionCoreService} from '../../../../lib/subvision-core.service';
 import {Router} from '@angular/router';
 import {PlastronService} from '../../../services/plastron.service';
 import {FilesService} from '../../../services/files.service';
@@ -129,7 +129,7 @@ export class CvComponent {
   }
 
   constructor(
-    private ngxOpenCv: NgxOpenCVService,
+    private ngxOpenCv: SubvisionCoreService,
     @Inject(DOCUMENT) document: Document,
     private router: Router,
     private plastronService: PlastronService,
