@@ -3,6 +3,7 @@ import {BehaviorSubject} from 'rxjs';
 import {OpenCVState} from './models';
 import SubvisionCVModule from '../assets/subvision-core/subvision_core';
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -39,6 +40,8 @@ export class SubvisionCoreService {
         getSheetCoordinates: module.getSheetCoordinates,
         processTargetImage: module.processTargetImage,
       };
+      // @ts-ignore
+      top.subvisionCore = this.instance; // make it available globally
       console.log('OpenCV module loaded');
       this.cvState.next(this.newState('ready'));
     }).catch(((err: any) => {

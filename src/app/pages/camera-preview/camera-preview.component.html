@@ -15,8 +15,8 @@
     <video width="4096" height="4096" #videoRef autoplay playsinline></video>
     <canvas id="imshow" [width]="modelInputShape[2]" [height]="modelInputShape[3]"></canvas>
   </div>
-  <app-loading *ngIf="loading" [loading]="!!loading">
-    <p>{{ loading.progress ? loading.text + ' - ' + loading.progress + '%' : loading.text }}</p>
+  <app-loading *ngIf="loading()" [loading]="!!loading()">
+    <p>{{ loading().progress ? loading().text + ' - ' + loading().progress + '%' : loading().text }}</p>
   </app-loading>
   <div id="cameraPreview"></div>
   <app-capture-button (click)="capture()" class="capture"

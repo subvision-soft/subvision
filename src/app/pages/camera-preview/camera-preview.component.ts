@@ -1,5 +1,5 @@
 // app.component.ts
-import {Component, computed, ElementRef, inject, OnDestroy, signal, ViewChild,} from '@angular/core';
+import {Component, computed, ElementRef, inject, OnDestroy, signal, ViewChild, WritableSignal,} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {LoadingComponent} from '../../components/loading/loading.component';
 import {Subscription} from 'rxjs';
@@ -25,7 +25,7 @@ type Coordinates = {
   imports: [NgIf, LoadingComponent, CaptureButton, OpencvImshowComponent],
 })
 export class CameraPreviewComponent implements OnDestroy {
-  private static readonly MAX_FPS = 5;
+  private static readonly MAX_FPS = 2;
   protected readonly CORRECT_COORDINATES_BEFORE_PROCESS = ParametersService.get('VALID_SHEET_BEFORE_PROCESS').value;
   private static readonly PREPROCESSING_SIZE = 500;
   @ViewChild('videoRef') videoRef!: ElementRef<HTMLVideoElement>;
@@ -37,7 +37,7 @@ export class CameraPreviewComponent implements OnDestroy {
 
   private readonly router: Router = inject(Router);
 
-
+  private processImageWorker: Worker | null = null;
   protected videoWidth = signal<number>(0);
   protected videoHeight = signal<number>(0);
   protected aspectRatio = computed((): number => {
@@ -49,9 +49,12 @@ export class CameraPreviewComponent implements OnDestroy {
     }
   );
 
-  loading: { text: string; progress: number | null } | null = {
+  readonly loading: WritableSignal<{ text: string; progress: number | null } | null> = signal<{
+    text: string;
+    progress: number | null
+  } | null>({
     text: 'Loading Subvision Core', progress: null,
-  };
+  });
   image: string | null = null;
   coordinates = signal<Coordinates[]>([]);
   coordinatesPercent = computed<Coordinates[]>(() => {
@@ -90,13 +93,14 @@ export class CameraPreviewComponent implements OnDestroy {
 
   constructor() {
     this.startCamera();
+
     this.openCVState = this.subvisionCoreService.cvState.subscribe((state) => {
       if (state.ready) {
-        this.loading = null;
+        this.loading.set(null);
       } else if (state.error) {
-        this.loading = {text: 'Failed to load Subvision Core', progress: null};
+        this.loading.set({text: 'Failed to load Subvision Core', progress: null});
       } else if (state.loading) {
-        this.loading = {text: 'Loading Subvision Core', progress: null};
+        this.loading.set({text: 'Loading Subvision Core', progress: null});
       }
     });
   }
@@ -112,6 +116,9 @@ export class CameraPreviewComponent implements OnDestroy {
   getImageData(fullSize: boolean = false): ImageData {
 
     const canvasElement = this.inputCanvasRef.nativeElement;
+
+    this.inputCanvasRef.nativeElement.width = this.videoRef.nativeElement.videoWidth || CameraPreviewComponent.PREPROCESSING_SIZE;
+    this.inputCanvasRef.nativeElement.height = this.videoRef.nativeElement.videoHeight || CameraPreviewComponent.PREPROCESSING_SIZE;
     this.input_canvas_ctx?.drawImage(this.videoRef.nativeElement, 0, 0, canvasElement.width, canvasElement.height);
     if (canvasElement.width === 0 || canvasElement.height === 0) {
       console.warn('Canvas dimensions are zero, returning empty ImageData');
@@ -123,13 +130,13 @@ export class CameraPreviewComponent implements OnDestroy {
 
   async startCamera(): Promise<void> {
     console.log('Starting Camera...');
-    this.loading = {text: 'Starting Camera...', progress: null};
+    this.loading.set({text: 'Starting Camera...', progress: null});
     // capture frame loop
     const capture_frame_continuous = async () => {
       const start = performance.now();
       this.videoWidth.set(this.videoRef.nativeElement.videoWidth);
       this.videoHeight.set(this.videoRef.nativeElement.videoHeight);
-      if (!this.continuous || this.loading) return;
+      if (!this.continuous || this.loading()) return;
       const imageData = this.getImageData(true)
       const lastCoordinates = this.coordinates();
       let coordinates: any = null;
@@ -138,17 +145,9 @@ export class CameraPreviewComponent implements OnDestroy {
       } catch (error) {
         console.log('Error processing image data:', error);
       }
+      this.coordinates.set(coordinates);
+
       if (coordinates) {
-        const size = coordinates.size();
-        const coordinatesArray: Coordinates[] = [];
-        for (let i = 0; i < size; i++) {
-          const coordinate = coordinates.get(i);
-          coordinatesArray.push({
-            x: coordinate.x,
-            y: coordinate.y,
-          });
-        }
-        this.coordinates.set(coordinatesArray);
 
         this.numberOfValidCoordinates.update((value) => {
           if (this.coordinates()?.length && lastCoordinates?.length) {
@@ -194,29 +193,57 @@ export class CameraPreviewComponent implements OnDestroy {
     }); // get input <canvas> ctx
     // start frame capture
     this.continuous = true;
-    this.loading = null;
+    this.loading.set(null);
     this.setLoading(null);
     await capture_frame_continuous();
   }
 
+  imageDataToBase64(imageData: ImageData) {
+    const canvas = document.createElement("canvas");
+    canvas.width = imageData.width;
+    canvas.height = imageData.height;
+
+    const ctx = canvas.getContext("2d");
+    ctx.putImageData(imageData, 0, 0);
+
+    const s = canvas.toDataURL("image/png");
+    canvas.remove();
+    return s; //
+  }
 
   async capture(): Promise<void> {
     if (this.CORRECT_COORDINATES_BEFORE_PROCESS <= this.numberOfValidCoordinates()) {
+
+      this.setLoading({text: 'Processing Image...', progress: null});
       // this.numberOfValidCoordinates.set(0);
       const imageData = this.getImageData(true);
-      const data = this.subvisionCoreService.instance.processTargetImage(imageData.width, imageData.height, imageData.data);
-      this.router.navigate(['/camera/result'], {
+
+      const worker = new Worker(new URL('../../workers/subvision.worker', import.meta.url), {type: 'classic'});
+      worker.postMessage({
+        width: imageData.width,
+        height: imageData.height,
+        data: imageData.data,
+        type: 'processTargetImage',
+      });
+
+      worker.onmessage = ({data}) => {
+        this.router.navigate(['/camera/result'], {
           state: {
-            data: data, edit: true
+            data: {
+              impacts: data.impacts,
+              image: this.imageDataToBase64(new ImageData(new Uint8ClampedArray(data.annotatedImage.data), data.annotatedImage.columns, data.annotatedImage.rows))
+            }, edit: true
           }
-        }
-      );
+        });
+        worker.terminate();
+      };
+
     }
 
   }
 
   setLoading(loading: { text: string; progress: number | null } | null): void {
-    this.loading = loading;
+    this.loading.set(loading);
   }
 
   ngOnDestroy(): void {
