@@ -60,6 +60,6 @@ export class EndpointsUtils {
       .join('/');
   }
   public static getPathNews() {
-    return "https://newsletter.subvsion.fr";
+    return "https://newsletter.subvision.fr";
   }
 }
