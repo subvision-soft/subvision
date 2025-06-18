@@ -59,7 +59,6 @@ export class EndpointsUtils {
       .filter((v) => !!v)
       .join('/');
   }
-
   public static getPathNews() {
     return "https://newsletter.subvsion.fr";
   }
