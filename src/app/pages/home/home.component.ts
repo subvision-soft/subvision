@@ -66,10 +66,20 @@ export class HomeComponent {
     private rssParserService: RSSParserService,
     private httpClient: HttpClient
   ) {
-    this.httpClient.get(EndpointsUtils.getPathNews()).subscribe((data: any) => {
+
+    fetch(EndpointsUtils.getPathNews()).then(
+      (response) => response.json()
+    ).then(
+      (data: any) => {
         this.actualites = data;
+        this.actualitesLoading = false;
       }
-    );
+    ).catch(
+      (error) => {
+        console.error('Error fetching news:', error);
+        this.actualitesLoading = false;
+      }
+    )
     filesService.clearSession();
   }
 
