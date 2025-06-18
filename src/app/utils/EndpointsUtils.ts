@@ -61,8 +61,6 @@ export class EndpointsUtils {
   }
 
   public static getPathNews() {
-    return [ParametersService.get("URL_API_SUBVISION").value, 'news']
-      .filter((v) => !!v)
-      .join('/');
+    return "https://newsletter.subvsion.fr";
   }
 }
