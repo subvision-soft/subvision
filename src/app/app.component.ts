@@ -38,10 +38,7 @@ export class AppComponent {
     private http: HttpClient,
   ) {
     this.parametersService.loaded.subscribe((loaded: boolean) => {
-
-      setTimeout(() => {
-        this.settingsLoaded.set(loaded);
-      }, 3000);
+      this.settingsLoaded.set(loaded);
       if (loaded) {
         fetch(EndpointsUtils.getPathGenToken(), {redirect: "follow"})
           .then((res) => res.json())

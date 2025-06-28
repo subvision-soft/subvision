@@ -3,7 +3,6 @@ import {Component, computed, ElementRef, inject, OnDestroy, signal, ViewChild, W
 import {NgIf} from '@angular/common';
 import {LoadingComponent} from '../../components/loading/loading.component';
 import {Subscription} from 'rxjs';
-import "@tensorflow/tfjs-backend-webgl";
 import {HttpClient} from '@angular/common/http';
 import {CaptureButton} from '../../components/capture-button/capture-button.component';
 import {Router} from '@angular/router';
@@ -215,7 +214,6 @@ export class CameraPreviewComponent implements OnDestroy {
     if (this.CORRECT_COORDINATES_BEFORE_PROCESS <= this.numberOfValidCoordinates()) {
 
       this.setLoading({text: 'Processing Image...', progress: null});
-      // this.numberOfValidCoordinates.set(0);
       const imageData = this.getImageData(true);
 
       const worker = new Worker(new URL('../../workers/subvision.worker', import.meta.url), {type: 'classic'});

@@ -1,42 +1,41 @@
-import {Component, EventEmitter, isDevMode, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {iconoirHome} from '@ng-icons/iconoir';
-import {Router} from '@angular/router';
+import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {TabBarButtonComponent} from '../tab-bar-button/tab-bar-button.component';
 import {NgForOf} from '@angular/common';
 import {ParametersService} from '../../services/parameters.service';
-import {jamCamera, jamCog, jamFolder, jamHome, jamJoystick, jamUser} from '@ng-icons/jam-icons';
 
 class Tab {
   active?: boolean = false;
   link: string = '';
   label: string = '';
   icon: string = '';
+  button?: boolean = false;
   hidden: boolean | (() => boolean) = false;
 }
 
 @Component({
-  selector: 'app-tab-bar',
+  selector: '[tabBar]',
   templateUrl: './tab-bar.component.html',
   styleUrls: ['./tab-bar.component.scss'],
   standalone: true,
-  imports: [TabBarButtonComponent, NgForOf],
+  imports: [TabBarButtonComponent, NgForOf, RouterLink, RouterLinkActive],
 })
 export class TabBarComponent {
   tabs: Tab[] = [
-    {icon: jamJoystick, label: 'Playground', link: '/playground', hidden: !isDevMode()},
-    {icon: jamHome, label: 'Accueil', link: '/home', hidden: false},
-    {icon: jamCamera, label: 'Caméra', link: '/camera', hidden: false},
+    {icon: 'home', label: 'Accueil', link: '/home', hidden: false},
+    {icon: 'camera', label: 'Caméra', link: '/camera', hidden: false, button: true},
     {
-      icon: jamFolder, label: 'Sessions', link: '/sessions', hidden: () => {
+      icon: 'folder', label: 'Sessions', link: '/sessions', hidden: () => {
         return !ParametersService.isLocalSave()
       }
     },
     {
-      icon: jamUser, label: 'Tireurs', link: '/users', hidden: () => {
+      icon: 'groups', label: 'Tireurs', link: '/users', hidden: () => {
         return !ParametersService.isLocalSave()
       }
     },
-    {icon: jamCog, label: 'Paramètres', link: '/settings', hidden: false},
+    {icon: 'settings', label: 'Paramètres', link: '/settings', hidden: false},
   ];
   @Output() select = new EventEmitter<Tab>();
 

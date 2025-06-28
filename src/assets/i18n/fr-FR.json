@@ -12,7 +12,10 @@
     }
   },
   "HOME": {
+    "WELCOME": "Bienvenue",
+    "WELCOME_SUBTITLE": "Subvision est un logiciel de calcul de scores pour le tir sur cible subaquatique. Il a pour ambition de simplifier le processus de calcul et de saisie des points lors des compétitions.",
     "ACTUALITIES": "Actualités",
+    "ACTUALITIES_SUBTITLE": "Retrouvez ici les dernières actualités concernant Subvision.",
     "TECHNICAL_INFORMATIONS": "Informations techniques",
     "RECENTLY_OPENED": "Récemment ouverts",
     "SHOW_ALL": "Tout voir",

@@ -1,38 +1,59 @@
-<app-header [showMenu]="false" [showBack]="false">
-  <app-logo [size]="40"/>
-</app-header>
+<article class="no-elevate round large large-padding middle-align">
+  <div class="large-padding">
+    <h2 class="titre">{{ 'HOME.WELCOME' | translate }}</h2>
+    <h6 class="subtitle">{{ 'HOME.WELCOME_SUBTITLE' | translate }}</h6>
+    <nav>
+      <button class="extra">
+        Commencer à scanner
+      </button>
+    </nav>
+  </div>
+</article>
+<div class="large-space"></div>
+<section class="responsive">
+  <div class="padding">
+    <h3 class="titre ">{{ 'HOME.ACTUALITIES' | translate }}</h3>
+    <h6 class="subtitle ">{{ 'HOME.ACTUALITIES_SUBTITLE' | translate }}</h6>
+  </div>
+  <div class="grid">
 
-<h1>{{ 'HOME.TECHNICAL_INFORMATIONS' | translate }}</h1>
-<div class="informations">
-  <a href="https://github.com/wave-soft" target="_blank" subvisionButton type="primary" [icon]="iconoirGithub"></a>
-</div>
-<h1 class="titre">{{ 'HOME.ACTUALITIES' | translate }}</h1>
-<div class="actualites">
-  <div ripple [class]="{actualite:true,gradient:actualites.length !== 0}" *ngFor="let actualite of actualites"
-       [style]="{
-    'background-image': 'url(' + actualite.illustration + ')'
+    @for (actualite of actualites; track $index) {
+      <div class="s12 m6 l6">
+        <article ripple class="round no-elevate no-padding wave"
+                 [style]="{
   }" (click)="openActualite(actualite)">
-    <h1>{{ actualite.title }}</h1>
-    <p>{{ actualite.date| date:'shortDate' }}</p>
-  </div>
-  <div *ngIf="actualites.length == 0" class="actualite">
-    <app-loading [loading]="actualitesLoading"></app-loading>
+          <img *ngIf="actualite.illustration" [src]="actualite.illustration" class="responsive large">
+          <div class="large-padding">
+            <h6>{{ actualite.title }}</h6>
+            <p>{{ actualite.date| date:'shortDate' }}</p>
+          </div>
+        </article>
+      </div>
 
-    <app-empty-text *ngIf="!actualitesLoading" text="{{'HOME.NO_ACTUALITY'| translate}}"></app-empty-text>
+    }
+
+
+    <div *ngIf="actualites.length == 0" class="actualite">
+      <app-loading [loading]="actualitesLoading"></app-loading>
+
+      <app-empty-text *ngIf="!actualitesLoading" text="{{'HOME.NO_ACTUALITY'| translate}}"></app-empty-text>
+    </div>
   </div>
-</div>
-<ng-container *ngIf="ParametersService.isLocalSave()">
-  <div class="titre-sessions">
-    <h1>{{ 'HOME.RECENTLY_OPENED' | translate }}</h1>
-    <app-tag ripple *ngIf="seances.length != 0" class="button"
-             routerLink="/sessions">{{ 'HOME.SHOW_ALL' | translate }}
-    </app-tag>
-  </div>
-  <div class="sessions">
-    <app-session-item (click)="openSession(seance)" [url]="seance" *ngFor="let seance of seances" [showLogo]="true">
-    </app-session-item>
-    <app-empty-text *ngIf="seances.length == 0" text="{{'HOME.NO_SESSION'|translate}}"></app-empty-text>
-  </div>
-</ng-container>
+  <ng-container *ngIf="ParametersService.isLocalSave()">
+    <div class="large-space "></div>
+    <div class="horizontal middle-align padding">
+      <h3>{{ 'HOME.RECENTLY_OPENED' | translate }}</h3>
+      <button ripple *ngIf="seances.length != 0" class="chip no-wrap"
+              routerLink="/sessions">{{ 'HOME.SHOW_ALL' | translate }}
+      </button>
+    </div>
+    <div class="grid">
+      <app-session-item (click)="openSession(seance)" [url]="seance" *ngFor="let seance of seances" [showLogo]="true">
+      </app-session-item>
+      <app-empty-text *ngIf="seances.length == 0" text="{{'HOME.NO_SESSION'|translate}}"></app-empty-text>
+    </div>
+  </ng-container>
+
+</section>
 
 

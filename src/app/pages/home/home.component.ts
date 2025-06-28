@@ -18,6 +18,7 @@ import {iconoirGithub} from '@ng-icons/iconoir';
 import {ButtonComponent} from '../../components/button/button.component';
 import {Actuality} from '../../models/actuality';
 import {ParametersService} from '../../services/parameters.service';
+import {NgIcon} from '@ng-icons/core';
 
 @Component({
   selector: 'app-home',
@@ -38,6 +39,7 @@ import {ParametersService} from '../../services/parameters.service';
     NgForOf,
     ButtonComponent,
     DatePipe,
+    NgIcon,
   ],
 })
 export class HomeComponent {

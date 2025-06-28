@@ -1,9 +1,12 @@
-<app-tab-bar-button
-  *ngFor="let tab of getTabs(); index as i;"
-  [link]="tab.link"
-  [icon]="tab.icon"
-  [label]="tab.label"
-  [active]="tab.active"
->
+@for (tab of getTabs(); track $index) {
 
-</app-tab-bar-button>
+  <a tabBarButton
+     [link]="tab.link"
+     [icon]="tab.icon"
+     [label]="tab.label"
+     [active]="tab.active"
+     [routerLink]="[tab.link]"
+     routerLinkActive="active"
+     [routerLinkActiveOptions]="{exact: false}">
+  </a>
+}

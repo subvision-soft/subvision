@@ -1,13 +1,21 @@
 @if (!showSplashScreen()) {
-  <div subvisionContainer maxWidth="800px" class="app-container">
-    <div class="app-page" id="app-page">
-      <app-toast></app-toast>
-      <router-outlet #outlet="outlet"></router-outlet>
-    </div>
-    <style type="text/css">{{ cssVariables }}</style>
-    <app-tab-bar></app-tab-bar>
-  </div>
+  <nav class="bottom s" tabBar></nav>
+  <nav class="m l left" tabBar></nav>
+
+
+  <main>
+    <app-toast></app-toast>
+    <router-outlet #outlet="outlet"></router-outlet>
+  </main>
 }
 
+
+
+
+
+
 <app-splash-screen [loading]="showSplashScreen()"></app-splash-screen>
+
+
+
 
