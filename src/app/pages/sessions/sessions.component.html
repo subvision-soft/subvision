@@ -1,33 +1,34 @@
 <app-header [showBack]="false" [showMenu]="true" [actions]="menuActions">
-    <h1>{{(target ? 'SESSIONS.SELECT_SESSION' : 'SESSIONS.TITLE') | translate}}</h1>
+  <h1>{{ (target ? 'SESSIONS.SELECT_SESSION' : 'SESSIONS.TITLE') | translate }}</h1>
 </app-header>
 <div class="content">
-    <app-search [(value)]="searchValue" placeholder="{{'SESSIONS.SEARCH'|translate}}"></app-search>
-    <app-add-button (click)="openCreateSession = true"  *ngIf="!searchValue"
-                    label="{{'SESSIONS.ADD_SESSION'|translate}}"></app-add-button>
-    <div class="sessions-content">
-        <div class="path">
-            <app-tag ripple (click)="openRoot()">/</app-tag>
-            <app-tag ripple  (click)="openAtIndexPath(index)"
-                     *ngFor="let pathItem of _path; index as index">{{pathItem}}</app-tag>
-        </div>
-        <div class="sessions">
-            <app-session-item *ngIf="path.length > 0"  [file]="returnFile" (click)="back()"
-                              [goBack]="true"></app-session-item>
-
-          @if (sessions.length) {
-
-            <app-session-item [selected]="session.active" long-press
-                              (onLongPressing)="onLongPress($event,session)"
-                              (click)="sessionClick(session)" [file]="session.file"
-                              *ngFor="let session of sessions">
-            </app-session-item>
-          } @else {
-            <app-empty-text *ngIf="sessions.length === 0"  [icon]="searchValue?'jamSearch':'jamGhost'"
-                            text="{{(searchValue?'SESSIONS.NO_RESULT':'SESSIONS.EMPTY_FOLDER') | translate}}"></app-empty-text>
-          }
-        </div>
+  <app-search [(value)]="searchValue" placeholder="{{'SESSIONS.SEARCH'|translate}}"></app-search>
+  <app-add-button (click)="openCreateSession = true" *ngIf="!searchValue"
+                  label="{{'SESSIONS.ADD_SESSION'|translate}}"></app-add-button>
+  <div class="sessions-content">
+    <div class="path">
+      <app-tag ripple (click)="openRoot()">/</app-tag>
+      <app-tag ripple (click)="openAtIndexPath(index)"
+               *ngFor="let pathItem of _path; index as index">{{ pathItem }}
+      </app-tag>
     </div>
+    <div class="sessions">
+      <button sessionItem *ngIf="path.length > 0" [file]="returnFile" (click)="back()"
+              [goBack]="true"></button>
+
+      @if (sessions.length) {
+
+        <button sessionItem [selected]="session.active" long-press
+                (onLongPressing)="onLongPress($event,session)"
+                (click)="sessionClick(session)" [file]="session.file"
+                *ngFor="let session of sessions">
+        </button>
+      } @else {
+        <app-empty-text *ngIf="sessions.length === 0" [icon]="searchValue?'jamSearch':'jamGhost'"
+                        text="{{(searchValue?'SESSIONS.NO_RESULT':'SESSIONS.EMPTY_FOLDER') | translate}}"></app-empty-text>
+      }
+    </div>
+  </div>
 </div>
 
 <app-message-box message="{{'SESSIONS.MESSAGES_BOX.NEW_FOLDER.MESSAGE' | translate}}"
@@ -38,19 +39,19 @@
                  [(open)]="openCreateSession"
                  (callback)="createSessionCallback($event)"
                  type="okcancel">
-    <app-input [(value)]="newSession.title"
-               label="{{'SESSIONS.MESSAGES_BOX.NEW_SESSION.INPUTS.TITLE' | translate}}"></app-input>
-    <div class="error" *ngIf="!isRequired(newSession.title)">
-      Ne doit pas être vide
-    </div>
-    <app-input [(value)]="newSession.description"
-               label="{{'SESSIONS.MESSAGES_BOX.NEW_SESSION.INPUTS.DESCRIPTION' | translate}}"></app-input>
-    <app-input [value]="(newSession.date | date:'yyyy-MM-dd' )  || ''"
-               (valueChange)="newSession.date = parseDate($event)"
-               label="{{'SESSIONS.MESSAGES_BOX.NEW_SESSION.INPUTS.DATE' | translate}}"
-               type="date"></app-input>
-    <div class="error" *ngIf="!isValidDate(newSession.date)">
-      La date n'est pas valide
-    </div>
+  <app-input [(value)]="newSession.title"
+             label="{{'SESSIONS.MESSAGES_BOX.NEW_SESSION.INPUTS.TITLE' | translate}}"></app-input>
+  <div class="error" *ngIf="!isRequired(newSession.title)">
+    Ne doit pas être vide
+  </div>
+  <app-input [(value)]="newSession.description"
+             label="{{'SESSIONS.MESSAGES_BOX.NEW_SESSION.INPUTS.DESCRIPTION' | translate}}"></app-input>
+  <app-input [value]="(newSession.date | date:'yyyy-MM-dd' )  || ''"
+             (valueChange)="newSession.date = parseDate($event)"
+             label="{{'SESSIONS.MESSAGES_BOX.NEW_SESSION.INPUTS.DATE' | translate}}"
+             type="date"></app-input>
+  <div class="error" *ngIf="!isValidDate(newSession.date)">
+    La date n'est pas valide
+  </div>
 </app-message-box>
 

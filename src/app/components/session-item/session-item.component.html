@@ -1,13 +1,16 @@
-<div class="content">
+<i><img src="assets/img/subvision_small.svg">
+  <svg appLogo [size]="20" *ngIf="showLogo || file?.type === 'file'"/>
+</i>
+
+<span class="content">
   <ng-icon *ngIf="file?.type === 'directory' && !goBack" name="jamFolder"
            size="20"></ng-icon>
-  <app-logo [size]="20" *ngIf="showLogo || file?.type === 'file'"/>
   <ng-icon *ngIf="goBack" name="jamArrowLeft" size="20"></ng-icon>
   <div *ngIf="file && !session" class="infos">
-    <h1>{{ file.name }}</h1>
+    {{ file.name }}
   </div>
   <div *ngIf="session" class="infos">
-    <h1>{{ session.title }}</h1>
+    {{ session.title }}
     <p>{{ session.date | date:'dd/MM/yyyy' }}</p>
     <p>{{ session.size.toFixed(1) }}Mo</p>
   </div>
@@ -17,6 +20,6 @@
   <a *ngIf="!goBack">
     <ng-icon [name]="selected?'jamCheck':'jamChevronRight'" size="20"></ng-icon>
   </a>
-</div>
+</span>
 
 

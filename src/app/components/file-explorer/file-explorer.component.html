@@ -1,11 +1,11 @@
 <div class="sessions">
-  <app-session-item *ngIf="pathString.length > 0"  [file]="returnFile" (click)="back()"
-                    [goBack]="true"></app-session-item>
-  <app-empty-text *ngIf="sessions.length === 0"  [icon]="'jamGhost'"
+  <button sessionItem *ngIf="pathString.length > 0" [file]="returnFile" (click)="back()"
+          [goBack]="true"></button>
+  <app-empty-text *ngIf="sessions.length === 0" [icon]="'jamGhost'"
                   [text]="'Le dossier est vide'"></app-empty-text>
 
-  <app-session-item
-    (click)="open(session)" [file]="session"
-    *ngFor="let session of sessions">
-  </app-session-item>
+  <button sessionItem
+          (click)="open(session)" [file]="session"
+          *ngFor="let session of sessions">
+  </button>
 </div>

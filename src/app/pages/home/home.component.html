@@ -18,7 +18,7 @@
   <div class="grid">
 
     @for (actualite of actualites; track $index) {
-      <div class="s12 m6 l6">
+      <div class="s12 m12 l6">
         <article ripple class="round no-elevate no-padding wave"
                  [style]="{
   }" (click)="openActualite(actualite)">
@@ -47,11 +47,30 @@
               routerLink="/sessions">{{ 'HOME.SHOW_ALL' | translate }}
       </button>
     </div>
-    <div class="grid">
-      <app-session-item (click)="openSession(seance)" [url]="seance" *ngFor="let seance of seances" [showLogo]="true">
-      </app-session-item>
-      <app-empty-text *ngIf="seances.length == 0" text="{{'HOME.NO_SESSION'|translate}}"></app-empty-text>
-    </div>
+    @if (seances.length == 0) {
+      <article class="medium round middle-align center-align">
+        <div>
+          <i class="extra">folder</i>
+          <h5>{{ 'HOME.NO_SESSION'|translate }}</h5>
+          <p>{{ 'HOME.NO_SESSION_SUBTITLE'|translate }}</p>
+          <div class="space"></div>
+          <nav class="center-align">
+            <button>{{ 'SESSIONS.MENU.NEW_SESSION'|translate }}</button>
+          </nav>
+        </div>
+      </article>
+
+
+    } @else {
+      <div class="grid">
+        @for (seance of seances; track $index) {
+          <div class="s12 m6 l4">
+
+            <button sessionItem (click)="openSession(seance)" [url]="seance" [showLogo]="true"></button>
+          </div>
+        }
+      </div>
+    }
   </ng-container>
 
 </section>

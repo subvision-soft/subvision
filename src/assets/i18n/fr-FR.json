@@ -20,7 +20,8 @@
     "RECENTLY_OPENED": "Récemment ouverts",
     "SHOW_ALL": "Tout voir",
     "NO_ACTUALITY": "Aucune actualité",
-    "NO_SESSION": "Aucune session"
+    "NO_SESSION": "Aucune session enregistrée",
+    "NO_SESSION_SUBTITLE": "Cliquer sur le bouton pour créer une session"
   },
   "RESULT": {
     "TITLE": "Résultat"
