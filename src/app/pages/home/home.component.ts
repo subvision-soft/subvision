@@ -19,6 +19,7 @@ import {ButtonComponent} from '../../components/button/button.component';
 import {Actuality} from '../../models/actuality';
 import {ParametersService} from '../../services/parameters.service';
 import {NgIcon} from '@ng-icons/core';
+import {TabBarComponent} from '../../components/tab-bar/tab-bar.component';
 
 @Component({
   selector: 'app-home',
@@ -40,6 +41,7 @@ import {NgIcon} from '@ng-icons/core';
     ButtonComponent,
     DatePipe,
     NgIcon,
+    TabBarComponent,
   ],
 })
 export class HomeComponent {

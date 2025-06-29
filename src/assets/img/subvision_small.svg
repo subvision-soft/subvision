@@ -56,7 +56,7 @@
     line {
       --stroke-width-ratio: 1;
       --final-stroke-width: calc(var(--stroke-width) * var(--stroke-width-ratio));
-      stroke: #000;
+      stroke: #fff;
       stroke-linecap: round;
 
       --duration: 0.8s;

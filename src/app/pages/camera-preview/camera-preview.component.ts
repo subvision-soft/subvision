@@ -1,6 +1,6 @@
 // app.component.ts
 import {Component, computed, ElementRef, inject, OnDestroy, signal, ViewChild, WritableSignal,} from '@angular/core';
-import {NgIf} from '@angular/common';
+import {Location, NgIf} from '@angular/common';
 import {LoadingComponent} from '../../components/loading/loading.component';
 import {Subscription} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
@@ -32,7 +32,7 @@ export class CameraPreviewComponent implements OnDestroy {
   @ViewChild('svg') svg: ElementRef | undefined;
   private input_canvas_ctx: CanvasRenderingContext2D | null;
   private opencvImshowService: OpencvImshowService = inject(OpencvImshowService);
-
+  private readonly location: Location = inject(Location);
 
   private readonly router: Router = inject(Router);
 
@@ -47,6 +47,10 @@ export class CameraPreviewComponent implements OnDestroy {
       return `0 0 ${this.videoWidth()} ${this.videoHeight()}`;
     }
   );
+
+  goBack() {
+    this.location.back();
+  }
 
   readonly loading: WritableSignal<{ text: string; progress: number | null } | null> = signal<{
     text: string;

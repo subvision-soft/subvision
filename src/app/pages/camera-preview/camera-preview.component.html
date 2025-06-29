@@ -1,5 +1,5 @@
 <!--webcam video-->
-<div class="camera-preview-container" #cameraPreview>
+<div class="camera-preview-container" #cameraPreview xmlns="http://www.w3.org/1999/html">
   <div class="canvas">
     <svg [style.--opacity]="coordinates() ? 1 : 0"
          [style.aspect-ratio]="aspectRatio()"
@@ -15,14 +15,39 @@
     <video width="4096" height="4096" #videoRef autoplay playsinline></video>
     <canvas id="imshow" [width]="modelInputShape[2]" [height]="modelInputShape[3]"></canvas>
   </div>
-  <app-loading *ngIf="loading()" [loading]="!!loading()">
-    <p>{{ loading().progress ? loading().text + ' - ' + loading().progress + '%' : loading().text }}</p>
-  </app-loading>
+
+
+  @if (loading()) {
+    <app-loading>
+      <p>{{ loading().progress ? loading().text + ' - ' + loading().progress + '%' : loading().text }}</p>
+    </app-loading>
+  }
   <div id="cameraPreview"></div>
-  <app-capture-button (click)="capture()" class="capture"
-                      [percent]=" 100"></app-capture-button>
+
+
 </div>
 <app-opencv-imshow></app-opencv-imshow>
+@let buttonIsLoading = numberOfValidCoordinates() / CORRECT_COORDINATES_BEFORE_PROCESS * 100 < 100 || loading() ;
+<nav class="center-align tiny-space bottom transparent"
+     style="position: absolute; height: fit-content; top: auto;">
 
+  <button class="large round circle error" (click)="goBack()">
+    <i>close</i>
+  </button>
+  <button class="extra circle"
+          [disabled]="buttonIsLoading"
+          [class.fill]="buttonIsLoading"
+          [class.round]="!buttonIsLoading"
+          (click)="capture()">
+    @if (buttonIsLoading) {
+      <div class="shape loading-indicator max medium-space"></div>
+    } @else {
+      <i class="material-icons">camera</i>
+    }
+  </button>
+  <button class="large round circle fill">
+    <i>indeterminate_question_box</i>
+  </button>
+</nav>
 <!--<canvas id="debug" width="4096" height="4096"></canvas>-->
 <!--<canvas id="debug2" width="4096" height="4096"></canvas>-->

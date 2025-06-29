@@ -3,3 +3,24 @@
 :root {
   --font: 'Roboto', sans-serif;
 }
+
+body {
+  //background: var(--theme-color-1);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  margin: 0;
+
+  app-root {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100dvh;
+    box-sizing: border-box;
+  }
+}
+
+main {
+  overflow: scroll;
+}
